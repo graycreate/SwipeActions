@@ -680,6 +680,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
                             .opacity(shown ? 1 : 0)
                             .mask(
                                 RoundedRectangle(cornerRadius: options.actionCornerRadius, style: .continuous)
+                                  .padding(.vertical, 0.5)
                             ),
                         alignment: side.edgeTriggerAlignment
                     )
@@ -691,6 +692,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
                         .opacity(shown ? 1 : 0)
                         .mask(
                             RoundedRectangle(cornerRadius: options.actionCornerRadius, style: .continuous)
+                              .padding(.vertical, 0.5)
                         )
                 }
             }
@@ -850,6 +852,15 @@ extension SwipeView {
 
 extension SwipeView {
     func onChanged(value: DragGesture.Value) {
+      let horizontalMovement = abs(value.translation.width)
+      let verticalMovement = abs(value.translation.height)
+      let horizontalToleranceRatio: CGFloat = 1
+      // Calculate the ratio of horizontal to vertical movement
+      let movementRatio = horizontalMovement / (verticalMovement == 0 ? 1 : verticalMovement)
+      
+      guard movementRatio > horizontalToleranceRatio else {
+        return
+      }
         /// Back up the value.
         latestDragGestureValueBackup = value
 
